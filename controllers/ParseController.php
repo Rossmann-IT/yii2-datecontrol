@@ -29,6 +29,7 @@ class ParseController extends \yii\web\Controller
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $post = Yii::$app->request->post();
         if (isset($post['displayDate'])) {
+            $type = ArrayHelper::getValue($post, 'type');
             $saveFormat = ArrayHelper::getValue($post, 'saveFormat');
             $dispFormat = ArrayHelper::getValue($post, 'dispFormat');
             $dispTimezone = ArrayHelper::getValue($post, 'dispTimezone');
@@ -37,7 +38,7 @@ class ParseController extends \yii\web\Controller
             $date = DateControl::getTimestamp($post['displayDate'], $dispFormat, $dispTimezone, $settings);
             if (empty($date) || !$date) {
                 $value = '';
-            } elseif ($saveTimezone != null) {
+            } elseif ($saveTimezone != null && $type !== DateControl::FORMAT_DATE) {
                 $value = $date->setTimezone(new DateTimeZone($saveTimezone))->format($saveFormat);
             } else {
                 $value = $date->format($saveFormat);
